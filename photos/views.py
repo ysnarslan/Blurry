@@ -27,7 +27,29 @@ def get_face(img, box):
 
 def get_encode(face_encoder, face, size):
     face = normalize(face)
-    face = cv2.resize(face, size)
+    if (face.shape[0] > face.shape[1]):
+        scale = face.shape[0] / 160
+        width = int(face.shape[1] / scale)
+        face = cv2.resize(face, (width, 160))
+        padding = int((160 - face.shape[1]) / 2)
+
+        if (160 - face.shape[1]) % 2 == 0:
+            face = cv2.copyMakeBorder(face, 0, 0, padding, padding, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+        else:
+            face = cv2.copyMakeBorder(face, 0, 0, padding, padding + 1, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+
+    else:
+        scale = face.shape[1] / 160
+        height = int(face.shape[0] / scale)
+        face = cv2.resize(face, (160, height))
+        padding = int((160 - face.shape[0]) / 2)
+
+        if (160 - face.shape[0]) % 2 == 0:
+            face = cv2.copyMakeBorder(face, padding, padding, 0, 0, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+        else:
+            face = cv2.copyMakeBorder(face, padding, padding + 1, 0, 0, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+
+    # face = cv2.resize(face, size)
     encode = face_encoder.predict(np.expand_dims(face, axis=0))[0]
     return encode
 
@@ -68,7 +90,7 @@ def recognize_faces(image, save_path):
     path_m = "facenet_keras_weights.h5"
     face_encoder.load_weights(path_m)
     encodings_path = 'encodings/ben_rdj.json'
-    encoding_dict = eval(load_pickle(encodings_path))
+    encoding_dict = encoding_dict = eval(load_pickle(encodings_path), {"array": np.array, "float32": np.float32})
 
     for face in faces:
         if face['confidence'] < confidence_t:

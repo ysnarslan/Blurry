@@ -36,7 +36,29 @@ def face_encoding(photo):
     face = img_RGB[y1:y2, x1:x2]
 
     face = normalize(face)
-    face = cv2.resize(face, required_shape)
+    if (face.shape[0] > face.shape[1]):
+        scale = face.shape[0] / 160
+        width = int(face.shape[1] / scale)
+        face = cv2.resize(face, (width, 160))
+        padding = int((160 - face.shape[1]) / 2)
+
+        if (160 - face.shape[1]) % 2 == 0:
+            face = cv2.copyMakeBorder(face, 0, 0, padding, padding, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+        else:
+            face = cv2.copyMakeBorder(face, 0, 0, padding, padding + 1, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+
+    else:
+        scale = face.shape[1] / 160
+        height = int(face.shape[0] / scale)
+        face = cv2.resize(face, (160, height))
+        padding = int((160 - face.shape[0]) / 2)
+
+        if (160 - face.shape[0]) % 2 == 0:
+            face = cv2.copyMakeBorder(face, padding, padding, 0, 0, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+        else:
+            face = cv2.copyMakeBorder(face, padding, padding + 1, 0, 0, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+
+    # face = cv2.resize(face, required_shape)
     face_d = np.expand_dims(face, axis=0)
     encode = face_encoder.predict(face_d)[0]
     encodes.append(encode)
