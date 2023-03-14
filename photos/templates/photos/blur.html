@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Blur Photo</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <!-- CSS only -->
+    <link rel="stylesheet" href="{% static 'photoshare/css/style.css' %}" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">    
+
+
+</head>
+
+<body class="m-5">
+    <div class="sidebar">
+        <ul>
+          <li><a href="{% url 'blur' %}">Blur Images</a></li>
+          <li><a href="#">Menü Öğesi 2</a></li>
+          <li><a href="#">Menü Öğesi 3</a></li>
+          <li><a href="#">Menü Öğesi 4</a></li>
+        </ul>
+      </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <div class="card center">
+                    <form method='POST' action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group m-3">
+                            <label class="title text-blue">Upload Image</label>
+                        </div>
+                        <div class="form-group m-3">
+                            <input required name="image" id="file" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name1', this)">
+                            <label for="file" class="btn-2">Upload</label>
+                        </div>
+                        <div class="form-group m-3">
+                            <div id="file-name1" class="title"></div>
+                        </div>
+                        <div class="form-group m-3">
+                            <label class="title text-blue">Upload Group Image</label>
+                        </div>
+                        <div class="form-group m-3">   
+                            <input required name="groupPhoto" id="file2" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name2', this)">                      
+                            <label for="file2" class="btn-2">Upload</label>
+                        </div>
+                        <div class="form-group m-3">
+                            <div id="file-name2" class="title"></div>
+                        </div>
+
+                        <button type='submit' class="btn btn-blue">Submit</button>
+                    </form>
+                </div>
+                <div class="row">
+                    {% for photo in photos %}
+                        <div class="col-md-4 ">
+                            <div class="card my-2">
+                                <img class="image-thumbail" src="../../../static/images/{{photo}}" alt="Card image cap">
+
+                                <div class="card-body">
+                                    <small>Name: {{photo}}</small>
+                                </div>
+                                <a href="../../../static/images/{{photo}}"  download class="btn btn-blue">Download</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'photoshare/js/script.js' %}"></script>
+</body>
+
+</html>
