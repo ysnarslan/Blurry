@@ -138,12 +138,14 @@ def recognize_faces(image, save_path):
 
 def blurPhoto(request):
     pathList = []
+    select = ""
     if request.method == 'POST':
         data = request.POST
         fs = FileSystemStorage()
 
         images = request.FILES.getlist('image')
         groupPhoto = request.FILES.getlist('groupPhoto')
+        select = request.POST.getlist('filterSelect')
 
         file = fs.save(str(images[0]), images[0])
         images = fs.url(file)
@@ -167,5 +169,5 @@ def blurPhoto(request):
 
 
         if pathList:
-            return render(request, "photos/blur.html", {"photos": pathList})
-    return render(request, 'photos/blur.html', {"photos": pathList})
+            return render(request, "photos/blur.html", {"photos": pathList, "select":select})
+    return render(request, 'photos/blur.html', {"photos": pathList,"select":select})
