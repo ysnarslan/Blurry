@@ -146,6 +146,7 @@ def blurPhoto(request):
         images = request.FILES.getlist('image')
         groupPhoto = request.FILES.getlist('groupPhoto')
         select = request.POST.getlist('filterSelect')
+        emojiSelect = request.POST.getlist('emojiSelect')
 
         file = fs.save(str(images[0]), images[0])
         images = fs.url(file)
