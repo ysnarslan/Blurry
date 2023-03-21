@@ -12,6 +12,7 @@ from scipy.spatial.distance import cosine
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from sklearn.preprocessing import Normalizer
+from photos.filters import blur, pixelate, blacked_eyes
 
 
 def detect_faces(face_detector, image):
@@ -53,13 +54,15 @@ def get_encode(face_encoder, face, size):
     encode = face_encoder.predict(np.expand_dims(face, axis=0))[0]
     return encode
 
-def blur_face(img, x1y1, x2y2):
-    x1, y1 = x1y1
-    x2, y2 = x2y2
-    kernel = np.ones((35, 35), np.float32) / (35*35)
-    #img[y1:y2, x1:x2] = cv2.GaussianBlur(img[y1:y2, x1:x2], (21, 21), 0)
-    img[y1:y2, x1:x2] = cv2.filter2D(img[y1:y2, x1: x2], -1, kernel)
-    return img
+def blur_face(img, x1y1, x2y2, eyes_xy, blur_mod):
+    if blur_mod == "blurFace": #pixelFace, blackFace, emojiFace
+        return blur(img, x1y1, x2y2)
+
+    elif blur_mod == "pixelFace":
+        return pixelate(img, x1y1, x2y2)
+
+    elif blur_mod == "blackFace":
+        return blacked_eyes(img, x1y1, x2y2, eyes_xy)
 
 def load_pickle(path="encodings/rdj.json"):
     with open(path, 'r') as f:
@@ -75,7 +78,7 @@ def l2_normalizer():
     l2_normalizer = Normalizer('l2')
     return l2_normalizer
 
-def recognize_faces(image, save_path):
+def recognize_faces(image, save_path, blur_mod):
 
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -95,8 +98,8 @@ def recognize_faces(image, save_path):
     for face in faces:
         if face['confidence'] < confidence_t:
             continue
-        face, pt_1, pt_2 = get_face(img_rgb, face['box'])
-        encode = get_encode(face_encoder, face, required_shape)
+        img_face, pt_1, pt_2 = get_face(img_rgb, face['box'])
+        encode = get_encode(face_encoder, img_face, required_shape)
         l2 = l2_normalizer()
         encode = l2.transform(encode.reshape(1, -1))[0]
         name = 'unknown'
@@ -115,7 +118,8 @@ def recognize_faces(image, save_path):
             # eyes_xy = get_eyes(res)
             # blur_eyes(img, eyes_xy)
             print(pt_1)
-            blur_face(image, pt_1, pt_2)
+            eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
+            blur_face(image, pt_1, pt_2, eyes_xy, blur_mod)
 
         else:
             cv2.rectangle(image, pt_1, pt_2, (0, 255, 0), 2)
@@ -166,7 +170,7 @@ def blurPhoto(request):
                 if not test_image2: continue
             except: pass
             pathList.append(name)
-            recognize_faces(test_image2, save_path)
+            recognize_faces(test_image2, save_path, select[0])
 
 
         if pathList:
