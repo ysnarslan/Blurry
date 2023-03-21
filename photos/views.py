@@ -12,7 +12,7 @@ from scipy.spatial.distance import cosine
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from sklearn.preprocessing import Normalizer
-from photos.filters import blur, pixelate, blacked_eyes
+from photos.filters import blur, pixelate, blacked_eyes, emoji_face
 
 
 def detect_faces(face_detector, image):
@@ -54,7 +54,7 @@ def get_encode(face_encoder, face, size):
     encode = face_encoder.predict(np.expand_dims(face, axis=0))[0]
     return encode
 
-def blur_face(img, x1y1, x2y2, eyes_xy, blur_mod):
+def blur_face(img, x1y1, x2y2, eyes_xy, blur_mod, emojiSelect):
     if blur_mod == "blurFace": #pixelFace, blackFace, emojiFace
         return blur(img, x1y1, x2y2)
 
@@ -63,6 +63,9 @@ def blur_face(img, x1y1, x2y2, eyes_xy, blur_mod):
 
     elif blur_mod == "blackFace":
         return blacked_eyes(img, x1y1, x2y2, eyes_xy)
+
+    elif blur_mod == "emojiFace":
+        return emoji_face(img, x1y1, x2y2, emojiSelect)
 
 def load_pickle(path="encodings/rdj.json"):
     with open(path, 'r') as f:
@@ -78,7 +81,7 @@ def l2_normalizer():
     l2_normalizer = Normalizer('l2')
     return l2_normalizer
 
-def recognize_faces(image, save_path, blur_mod):
+def recognize_faces(image, save_path, blur_mod, emojiSelect):
 
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -119,7 +122,7 @@ def recognize_faces(image, save_path, blur_mod):
             # blur_eyes(img, eyes_xy)
             print(pt_1)
             eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
-            blur_face(image, pt_1, pt_2, eyes_xy, blur_mod)
+            blur_face(image, pt_1, pt_2, eyes_xy, blur_mod, emojiSelect)
 
         else:
             cv2.rectangle(image, pt_1, pt_2, (0, 255, 0), 2)
@@ -170,7 +173,7 @@ def blurPhoto(request):
                 if not test_image2: continue
             except: pass
             pathList.append(name)
-            recognize_faces(test_image2, save_path, select[0])
+            recognize_faces(test_image2, save_path, select[0], emojiSelect)
 
 
         if pathList:
