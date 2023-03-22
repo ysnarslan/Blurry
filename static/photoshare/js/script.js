@@ -11,6 +11,7 @@ function filter(){
   var filterSelect = document.getElementById("filterSelect");
   var filterName = filterSelect.value;
 
+
   if(filterName == "emojiFace"){ 
 
     var emojiValue = ["smileyFace","coolFace","sadFace","angelFace"];
@@ -29,11 +30,20 @@ function filter(){
       option.text =  String.fromCodePoint(dec)
       selectList.appendChild(option);
     }
+
+    var info = document.createElement("i");
+    info.className ="fa fa-question-circle questionButton"
+    info.setAttribute('data-title','Filtreleme de kullanılacak emojiyi seçiniz.')
+    info.id = "info";
+    info.style.marginLeft = "8px"
+    emojiSelect.appendChild(info)
+    
   }
 
   var element = document.getElementById("emojiSelect")
   if(filterName !== "emojiFace" && element != null ){
     document.getElementById("emojiSelect").remove(); 
+    document.getElementById("info").remove();
   }
 }
 

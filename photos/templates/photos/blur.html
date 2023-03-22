@@ -18,14 +18,6 @@
 </head>
 
 <body class="m-5">
-    <div class="sidebar">
-        <ul>
-          <li><a href="{% url 'blur' %}">Blur Images</a></li>
-          <li><a href="#">Menü Öğesi 2</a></li>
-          <li><a href="#">Menü Öğesi 3</a></li>
-          <li><a href="#">Menü Öğesi 4</a></li>
-        </ul>
-      </div>
 
     <div class="container">
         <div class="row justify-content-center">
@@ -36,6 +28,7 @@
 
                         <div class="form-group m-3">
                             <label class="title text-blue">Upload Image</label>
+                            <i class="fa fa-question-circle questionButton" aria-hidden="true" data-title="Bu alana yüzü blurlanmayacak kişinin resim klasörünü yükleyiniz."></i>
                         </div>
                         <div class="form-group m-3">
                             <input required name="image" id="file" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name1', this)">
@@ -46,6 +39,7 @@
                         </div>
                         <div class="form-group m-3">
                             <label class="title text-blue">Upload Group Image</label>
+                            <i class="fa fa-question-circle questionButton" aria-hidden="true" data-title="Bu alana toplu fotoğraf olan resim klasörünü yükleyiniz."></i>
                         </div>
                         <div class="form-group m-3">   
                             <input required name="groupPhoto" id="file2" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name2', this)">                      
@@ -61,6 +55,7 @@
                                 <option value="blackFace">Black Face</option>
                                 <option value="emojiFace">Emoji Face</option>
                             </select>
+                            <i class="fa fa-question-circle questionButton" aria-hidden="true" data-title="Bu alanda işlem yapılacak filtre türünü seçiniz."></i>
                         </div>
                         <div id="emojiSelectBox"></div>
 
