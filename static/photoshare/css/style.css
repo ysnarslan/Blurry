@@ -82,9 +82,7 @@ body{
   height: 200px !important;
   object-fit: contain;
 }
-.questionButton{
-  color: #4285F4 !important;
-}
+
 [type="file"] {
   height: 0;
   overflow: hidden;
@@ -135,20 +133,6 @@ body{
 }
 .btn-blue:hover{
   background-color: #2458b6 !important;
-}
-.questionButton:hover::after { 
-  content: attr(data-title); 
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-weight: normal;
-  position: absolute;  
-  min-width: 50px;
-  width: 40%;
-  word-wrap:break-word;
-  padding: 10px;
-  margin:0px 0px 0px 20px;
-  background-color: #4285F4;
-  color: white;
-  border-radius: 25px;
 }
 
 .image-area{
