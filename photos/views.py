@@ -150,6 +150,7 @@ def blurPhoto(request):
         data = request.POST
         fs = FileSystemStorage()
 
+        procress = request.POST.get('procress')
         images = request.FILES.getlist('image')
         groupPhoto = request.FILES.getlist('groupPhoto')
         select = request.POST.getlist('filterSelect')

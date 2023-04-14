@@ -3,6 +3,11 @@
 import os
 import sys
 
+#Dosya silme işlemini yapan py kodunu çalıştırmak için yazılan komut.
+import subprocess
+
+subprocess.Popen(['python', 'deleteFolder.py'])
+
 
 def main():
     """Run administrative tasks."""

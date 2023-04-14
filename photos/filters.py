@@ -56,7 +56,7 @@ def blacked_eyes(img, x1y1, x2y2, eyes_xy):
 def emoji_face(img, x1y1, x2y2, emojiSelect):
     x1, y1 = x1y1
     x2, y2 = x2y2
-    emoji_path = "static/photoshare/images/" + emojiSelect[0] + ".png"
+    emoji_path = "static/photoshare/images/emojis/" + emojiSelect[0] + ".png"
     #emoji_path = "static/photoshare/images/angelFace.png"
     emoji = cv2.imread(emoji_path)
     #emoji_rgb = cv2.cvtColor(emoji, cv2.COLOR_BGR2RGB)

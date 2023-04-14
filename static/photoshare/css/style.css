@@ -1,7 +1,86 @@
+body{
+  background-color: #181a1b !important;
+  color: #bcb7ae !important;
+  margin: 0 ;
+}
 .title{
   color: #4285F4;
   font-weight: bolder;
   font-size: 1rem;
+}
+.fixedBar {
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 75px;
+  z-index: 1;
+}
+
+.fixedBar a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+.imageLogo{
+  height: 50px;
+  object-fit: contain;
+  margin: 0px 10px;
+}
+.container{
+  margin-top: 150px !important;
+}
+.uploadArea {
+  display: grid;
+  grid-template-columns: repeat(4, 25%) 0;
+  grid-column-gap: 40px;
+  grid-row-gap: 20px;
+  margin-bottom: 50px;
+}
+  
+.uploadArea1 { 
+  grid-area: 1 / 2 / 2 / 3;
+}
+.resim{
+  width:100%;
+  object-fit:cover;
+  border-radius: 50px;
+}
+
+.uploadArea2 { 
+  margin-top: 30px;
+  grid-area: 2 / 2 / 3 / 3; 
+  font-size: 36px;
+  font-weight: bolder;
+  min-height: 100px;
+  text-align: center;
+}
+
+.uploadArea3 { 
+  grid-area: 1 / 3 / 3 / 4;
+  justify-content: center;
+  padding: 5px;
+}
+
+.card{
+  background-color: #181a1b !important;
+  color: #bcb7ae !important;
+  -webkit-box-shadow: 0px 0px 15px 0px #bcb7ae; 
+  box-shadow: 0px 0px 15px 0px #bcb7ae;
+}
+
+.image-card{
+  height: 300px !important;
+}
+.image-thumbail{
+  width: 100% !important;
+  height: 200px !important;
+  object-fit: contain;
 }
 .questionButton{
   color: #4285F4 !important;
@@ -12,45 +91,29 @@
   width: 0;
 }
 [type="file"] + label {
-  background: #f15d22;
   border: none;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
   display: inline-block;
   font-family: 'Rubik', sans-serif;
-  font-size: inherit;
+  font-size: 20px;
   font-weight: 500;
   margin-bottom: 8px;
   outline: none;
-  padding: 8px 50px;
+  padding: 8px 10px;
   position: relative;
   transition: all 0.3s;
   vertical-align: middle;
+  width: 100%;
 }
 [type="file"] + label.btn-2 {
-  background-color: #1e6ff1b6;
+  background-color: #2458b6;
   border-radius: 50px;
   overflow: hidden;
 }
-[type="file"] + label.btn-2::before {
-  color: #fff;
-  font-family: "Font Awesome 5 Free"; 
-  font-weight: 900; 
-  content: "\f0c2";
-  font-size: 100%;
-  height: 100%;
-  right: 130%;
-  line-height: 3.3;
-  position: absolute;
-  top: -8px;
-  transition: all 0.3s;
-}
 [type="file"] + label.btn-2:hover {
-  background-color: #1e6ff1;
-}
-[type="file"] + label.btn-2:hover::before {
-  right: 75%;
+  background-color: #4d7bd1;
 }
 
 .center{
@@ -67,11 +130,11 @@
 
 .btn-blue{
   color:#fff !important;
-  background-color:#1e6ff1b6 !important;
-  border-color:#1e6ff1b6 !important
+  background-color:#2458b6 !important;
+  border-color:#2458b6 !important
 }
 .btn-blue:hover{
-  background-color: #1e6ff1 !important;
+  background-color: #2458b6 !important;
 }
 .questionButton:hover::after { 
   content: attr(data-title); 
@@ -86,4 +149,70 @@
   background-color: #4285F4;
   color: white;
   border-radius: 25px;
+}
+
+.image-area{
+  margin-bottom: 50px ;
+}
+
+.informArea {
+  margin-left: 40%;
+  display: grid;
+  grid-template-columns: repeat(2, 30%);
+  grid-template-rows: repeat(4, 1fr);
+  grid-column-gap: 5%;
+  grid-row-gap: 2%;
+  margin-top: 50px;
+}
+  
+.informArea1 { 
+  grid-area: 1 / 1 / 2 / 2; 
+}
+.informArea2 { 
+  grid-area: 1 / 2 / 2 / 3; 
+  font-size: 36px;
+  font-weight: bolder;
+  min-height: 100px;
+  display: flex;            
+  justify-content: center;            
+  align-items: center;
+}
+.informArea3 { 
+  grid-area: 2 / 1 / 3 / 2;
+  font-size: 36px;
+  font-weight: bolder;
+  min-height: 100px;
+  text-align: center;
+  display: flex;            
+  justify-content: center;            
+  align-items: center;
+}
+.informArea4 { 
+  grid-area: 2 / 2 / 3 / 3; 
+}
+.informArea5 { 
+  grid-area: 3 / 1 / 4 / 2; 
+}
+.informArea6 { 
+  grid-area: 3 / 2 / 4 / 3; 
+  font-size: 36px;
+  font-weight: bolder;
+  min-height: 100px;
+  text-align: center;
+  display: flex;            
+  justify-content: center;            
+  align-items: center;
+}
+.informArea7 { 
+  grid-area: 4 / 1 / 5 / 2; 
+  font-size: 36px;
+  font-weight: bolder;
+  min-height: 100px;
+  text-align: center;
+  display: flex;            
+  justify-content: center;            
+  align-items: center;
+}
+.informArea8 { 
+  grid-area: 4 / 2 / 5 / 3; 
 }
