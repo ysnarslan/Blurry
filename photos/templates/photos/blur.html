@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="{% static 'photoshare/css/style.css' %}" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">    
 
+    <link rel="shortcut icon" href="#">
 
 </head>
 
@@ -26,46 +27,50 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="uploadArea">
-                <div class="uploadArea1">
-                    <img class="resim" src="../../../static/photoshare/images/default-image.jpg">
+                <div class="uploadAreaLeft">
+                    <div class="uploadArea1">
+                        <img class="resim" src="../../../static/photoshare/images/default-image.jpg">
+                    </div>
+                    <div class="uploadArea2">Blur Face Image  </div>
                 </div>
-                <div class="uploadArea2">Blur Face Image  </div>
-                <div class="uploadArea3 card center">
-                    <form method='POST' action="" enctype="multipart/form-data">
-                        <span>{{procress}}</span>
-                        {% csrf_token %}
-                        <div class="form-group m-3">
-                            <input type="radio" id="me" name="procress" value="Me" checked>
-                            <label for="age1">Me</label>
-                            <input type="radio" id="other" name="procress" value="Other">
-                            <label for="age2">Other</label>
-                        </div>
-                        <div class="form-group m-3">
-                            <input required name="image" id="file" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name1', this)">
-                            <label for="file" class="btn-2">Upload Image</label>
-                        </div>
-                        <div class="form-group m-3">
-                            <div id="file-name1" class="title"></div>
-                        </div>
-                        <div class="form-group m-3">   
-                            <input required name="groupPhoto" id="file2" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name2', this)">                      
-                            <label for="file2" class="btn-2">Upload Group Image</label>
-                        </div>
-                        <div class="form-group m-3">
-                            <div id="file-name2" class="title"></div>
-                        </div>
-                        <div class="m-3">
-                            <select name="filterSelect" id="filterSelect" onchange="filter()">
-                                <option selected value="blurFace">Blur Face</option>
-                                <option value="pixelFace">Pixel Face </option>
-                                <option value="blackFace">Black Face</option>
-                                <option value="emojiFace">Emoji Face</option>
-                            </select>
-                        </div>
-                        <div id="emojiSelectBox"></div>
+                <div class="uploadAreaRight">
+                    <div class="card center">
+                        <form method='POST' action="" enctype="multipart/form-data">
+                            <span>{{procress}}</span>
+                            {% csrf_token %}
+                            <div class="form-group m-3">
+                                <input type="radio" id="me" name="procress" value="Me" checked>
+                                <label for="age1">Me</label>
+                                <input type="radio" id="other" name="procress" value="Other">
+                                <label for="age2">Other</label>
+                            </div>
+                            <div class="form-group m-3">
+                                <input required name="image" id="file" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name1', this)">
+                                <label for="file" class="btn-2">Upload Image</label>
+                            </div>
+                            <div class="form-group m-3">
+                                <div id="file-name1" class="title"></div>
+                            </div>
+                            <div class="form-group m-3">   
+                                <input required name="groupPhoto" id="file2" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name2', this)">                      
+                                <label for="file2" class="btn-2">Upload Group Image</label>
+                            </div>
+                            <div class="form-group m-3">
+                                <div id="file-name2" class="title"></div>
+                            </div>
+                            <div class="m-3">
+                                <select name="filterSelect" id="filterSelect" onchange="filter()">
+                                    <option selected value="blurFace">Blur Face</option>
+                                    <option value="pixelFace">Pixel Face </option>
+                                    <option value="blackFace">Black Face</option>
+                                    <option value="emojiFace">Emoji Face</option>
+                                </select>
+                            </div>
+                            <div id="emojiSelectBox"></div>
 
-                        <button type='submit' class="btn btn-blue">Submit</button>
-                    </form>
+                            <button type='submit' class="btn btn-blue">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="row image-area">
@@ -84,15 +89,14 @@
                 {% endfor %}
             </div>  
             <div class="informArea">
-                <div class="informArea1"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
-                <div class="informArea2"><span>Lorem İpsum</span></div>
-                <div class="informArea3"><span>Lorem İpsum</span></div>
-                <div class="informArea4"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
-                <div class="informArea5"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
-                <div class="informArea6"><span>Lorem İpsum</span></div>
-                <div class="informArea7"><span>Lorem İpsum</span></div>
-                <div class="informArea8"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
-                
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
+                <div class="informItem"><span>Lorem İpsum</span></div> 
+                <div class="informItem"><span>Lorem İpsum</span></div>     
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>     
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
+                <div class="informItem"><span>Lorem İpsum</span></div>           
+                <div class="informItem"><span>Lorem İpsum</span></div>          
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div> 
             </div> 
         </div>
     </div>

@@ -1,4 +1,4 @@
-function showFileName(elementId, inputElement) {
+function showFileName(elementId) {
     const fileName = "Dosya Seçildi!"
     const fileNameDisplay = document.getElementById(elementId);
     fileNameDisplay.textContent = fileName;
