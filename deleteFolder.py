@@ -3,7 +3,7 @@ import shutil
 import time
 
 # Temizlenecek klasörün yolu
-folder_path = r'C:\Users\Semih\Documents\GitHub\face\static\images'
+folder_path = r'static/images'
 
 
 while True:

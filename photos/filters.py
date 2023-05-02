@@ -1,25 +1,89 @@
 import numpy as np
-import mtcnn
+#import mtcnn
 # from cv2 import filter2D
 import cv2
+
+def get_face(box):
+    x1, y1, width, height = box
+    x1, y1 = abs(x1), abs(y1)
+    x2, y2 = x1 + width, y1 + height
+    return x1, y1, x2, y2
+
 
 def blur(img, x1y1, x2y2):
     x1, y1 = x1y1
     x2, y2 = x2y2
+    half_width = (x2 - x1) // 2
+    half_height = (y2 - y1) // 2
+    h, w, c = img.shape
+
+    image_mask = np.zeros((h, w), np.uint8)
+    image_mask = cv2.ellipse(image_mask, (x2 - half_width, y2 - half_height),
+                             (half_width + 10, half_height + 5),
+                             0, 0, 360, color=(255, 255, 255), thickness=-1)
+
+    image_mask2 = cv2.ellipse(img.copy(), (x2 - half_width, y2 - half_height),
+                             (half_width + 10, half_height + 5),
+                             0, 0, 360, color=(255, 255, 255), thickness=-1)
+
+    # cv2.imshow("elips", cv2.cvtColor(image_mask, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
     kernel = np.ones((35, 35), np.float32) / (35 * 35)
+    blurred_image = cv2.filter2D(img, -1, kernel)
+    # cv2.imshow("blur", cv2.cvtColor(blurred_image, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
+    mask2 = cv2.bitwise_and(blurred_image, blurred_image, mask=image_mask)
+    # cv2.imshow("mask2", cv2.cvtColor(mask2, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
+    final_img = image_mask2 + mask2
+    # cv2.imshow("final", cv2.cvtColor(final, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
+
+    #kernel = np.ones((35, 35), np.float32) / (35 * 35)
     # img[y1:y2, x1:x2] = cv2.GaussianBlur(img[y1:y2, x1:x2], (21, 21), 0)
-    img[y1:y2, x1:x2] = cv2.filter2D(img[y1:y2, x1: x2], -1, kernel)
-    return img
+    #img[y1:y2, x1:x2] = cv2.filter2D(img[y1:y2, x1: x2], -1, kernel)
+    return final_img
 
 
 def pixelate(img, x1y1, x2y2):
     x1, y1 = x1y1
     x2, y2 = x2y2
-    # n, m = n - n % 30, m - m % 30
-    for x in range(y1, y2 + 1, 10):
-        for y in range(x1, x2, 10):
-            img[x:x+10, y:y+10] = img[x:x+10, y:y+10].mean(axis=(0, 1))
-    return img.astype(np.uint8)
+    half_width = (x2 - x1) // 2
+    half_height = (y2 - y1) // 2
+    h, w, c = img.shape
+
+    image_mask = np.zeros((h, w), np.uint8)
+    image_mask = cv2.ellipse(image_mask, (x2 - half_width, y2 - half_height),
+                             (half_width + 5, half_height + 5),
+                             0, 0, 360, color=(255, 255, 255), thickness=-1)
+    image_mask2 = cv2.ellipse(img.copy(), (x2 - half_width, y2 - half_height),
+                              (half_width + 5, half_height + 5),
+                              0, 0, 360, color=(255, 255, 255), thickness=-1)
+
+    # cv2.imshow("elips", cv2.cvtColor(image_mask2, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
+    pixelated_image = np.zeros((h, w, c), np.uint8)
+    for x in range(0, h, 10):
+        for y in range(0, w, 10):
+            pixelated_image[x:x + 10, y:y + 10] = img[x:x + 10, y:y + 10].mean(axis=(0, 1))
+
+    # cv2.imshow("pixelate", cv2.cvtColor(pixelated_image, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey()
+
+    mask2 = cv2.bitwise_and(pixelated_image, pixelated_image, mask=image_mask)
+    # cv2.imshow("mask2", cv2.cvtColor(mask2, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
+    final_img = mask2 + image_mask2
+    # cv2.imshow("final", cv2.cvtColor(final_img, cv2.COLOR_BGR2RGB))
+    # cv2.waitKey(0)
+
+    return final_img
 
 
 def blacked_eyes(img, x1y1, x2y2, eyes_xy):
@@ -82,10 +146,6 @@ def emoji_face(img, x1y1, x2y2, emojiSelect):
 
     return img
 
-# overlay_img = cv2.imread("static/photoshare/images/coolFace.png")
-#
-# cv2.imshow("dnm", overlay_mask)
-# cv2.waitKey()
 
 def blend_non_transparent(face_img, overlay_img):
     # Let's find a mask covering all the non-black (foreground) pixels
@@ -112,27 +172,75 @@ def blend_non_transparent(face_img, overlay_img):
     # And finally just add them together, and rescale it back to an 8bit integer image
     return np.uint8(cv2.addWeighted(face_part, 255.0, overlay_part, 255.0, 0.0))
 
-# image = cv2.imread("static/images/rdj1.jpg")
-# image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 # face_detector = mtcnn.MTCNN()
-# faces = face_detector.detect_faces(image)
-# eyes_xy = []
-# type(faces[0]["keypoints"]["left_eye"])
-# type(eyes_xy)
-# type(faces[0])
-# faces[0]["keypoints"]
-
-# for face in faces:
-#     print(i, ".", [face["keypoints"]["left_eye"], face["keypoints"]["right_eye"]])
-#     # eyes_xy.append([face["keypoints"]["left_eye"], face["keypoints"]["right_eye"]])
-#     i += 1
-#     cv2.rectangle(image, face["keypoints"]["left_eye"], face["keypoints"]["right_eye"], (0, 0, 255), 2)
 #
-# cv2.imshow("eye", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+# image = cv2.imread("test/chris.jpg")
+# image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+# faces = face_detector.detect_faces(image)
+# face = faces[0]
+#
+# x1, y1, x2, y2 = get_face(face['box'])
+# x1 = (x2 - x1) // 2
+# y1 = (y2 - y1) // 2
+#
+# h, w, c = image.shape
+# image_mask = np.zeros((h, w), np.uint8)
+# image_mask = cv2.ellipse(image_mask, (x2 - x1, y2 - y1), (face["box"][2]//2 + 5, face["box"][3]//2 + 10),
+#                          0, 0, 360, color=(255, 255, 255), thickness=-1)
+# image_mask2 = cv2.ellipse(image.copy(), (x2 - x1, y2 - y1), (face["box"][2]//2 + 5, face["box"][3]//2 + 10),
+#                          0, 0, 360, color=(255, 255, 255), thickness=-1)
+#
+# cv2.imshow("elips", cv2.cvtColor(image_mask, cv2.COLOR_BGR2RGB))
 # cv2.waitKey(0)
 #
-# for face in faces:
-#     print(face)
+# kernel = np.ones((35, 35), np.float32) / (35 * 35)
+# blurred_image = cv2.filter2D(image, -1, kernel)
+# cv2.imshow("blur", cv2.cvtColor(blurred_image, cv2.COLOR_BGR2RGB))
+# cv2.waitKey(0)
+#
+# mask2 = cv2.bitwise_and(blurred_image, blurred_image, mask=image_mask)
+# cv2.imshow("mask2", cv2.cvtColor(mask2, cv2.COLOR_BGR2RGB))
+# cv2.waitKey(0)
+#
+# final = image_mask2 + mask2
+# cv2.imshow("final", cv2.cvtColor(final, cv2.COLOR_BGR2RGB))
+# cv2.waitKey(0)
 
 
-# if (face["keypoints"]["left_eye"] & face["keypoints"]["right_eye"]) else None
+# face_detector = mtcnn.MTCNN()
+#
+# image = cv2.imread("test/chris.jpg")
+# image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+# faces = face_detector.detect_faces(image)
+# face = faces[0]
+#
+# x1, y1, x2, y2 = get_face(face['box'])
+# x1 = (x2 - x1) // 2
+# y1 = (y2 - y1) // 2
+#
+# h, w, c = image.shape
+# image_mask = np.zeros((h, w), np.uint8)
+# image_mask = cv2.ellipse(image_mask, (x2 - x1, y2 - y1), (face["box"][2]//2 + 5, face["box"][3]//2 + 10),
+#                          0, 0, 360, color=(255, 255, 255), thickness=-1)
+# image_mask2 = cv2.ellipse(image.copy(), (x2 - x1, y2 - y1), (face["box"][2]//2 + 5, face["box"][3]//2 + 10),
+#                          0, 0, 360, color=(255, 255, 255), thickness=-1)
+#
+# cv2.imshow("elips", cv2.cvtColor(image_mask2, cv2.COLOR_BGR2RGB))
+# cv2.waitKey(0)
+#
+# pixelated_image = np.zeros((h, w, c), np.uint8)
+# for x in range(0, h, 10):
+#     for y in range(0, w, 10):
+#         pixelated_image[x:x+10, y:y+10] = image[x:x+10, y:y+10].mean(axis=(0, 1))
+#
+# cv2.imshow("pixelate", cv2.cvtColor(pixelated_image, cv2.COLOR_BGR2RGB))
+# cv2.waitKey()
+#
+# mask2 = cv2.bitwise_and(pixelated_image, pixelated_image, mask=image_mask)
+# cv2.imshow("mask2", cv2.cvtColor(mask2, cv2.COLOR_BGR2RGB))
+# cv2.waitKey(0)
+#
+# final_img = mask2 + image_mask2
+# cv2.imshow("final", cv2.cvtColor(final_img, cv2.COLOR_BGR2RGB))
+# cv2.waitKey(0)
+

@@ -54,7 +54,7 @@ def get_encode(face_encoder, face, size):
     encode = face_encoder.predict(np.expand_dims(face, axis=0))[0]
     return encode
 
-def blur_face(img, x1y1, x2y2, eyes_xy, blur_mod, emojiSelect):
+def hide_face(img, x1y1, x2y2, eyes_xy, blur_mod, emojiSelect):
     if blur_mod == "blurFace": #pixelFace, blackFace, emojiFace
         return blur(img, x1y1, x2y2)
 
@@ -81,7 +81,7 @@ def l2_normalizer():
     l2_normalizer = Normalizer('l2')
     return l2_normalizer
 
-def recognize_faces(image, save_path, blur_mod, emojiSelect):
+def recognize_faces(image, save_path, blur_mod, emojiSelect, process):
 
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -96,7 +96,7 @@ def recognize_faces(image, save_path, blur_mod, emojiSelect):
     path_m = "facenet_keras_weights.h5"
     face_encoder.load_weights(path_m)
     encodings_path = 'encodings/ben_rdj.json'
-    encoding_dict = encoding_dict = eval(load_pickle(encodings_path), {"array": np.array, "float32": np.float32})
+    encoding_dict = eval(load_pickle(encodings_path), {"array": np.array, "float32": np.float32})
 
     for face in faces:
         if face['confidence'] < confidence_t:
@@ -110,25 +110,20 @@ def recognize_faces(image, save_path, blur_mod, emojiSelect):
         distance = float("inf")
         for db_name, db_encode in encoding_dict.items():
             dist = cosine(db_encode, encode)
-            print(dist)
-            if dist < recognition_t and dist < distance:
+            if dist <= recognition_t and dist < distance:
                 name = db_name
                 distance = dist
 
-        if name == 'unknown':
-            cv2.rectangle(image, pt_1, pt_2, (0, 0, 255), 2)
-            cv2.putText(image, name + f'__{distance:.2f}', pt_1, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            # eyes_xy = get_eyes(res)
-            # blur_eyes(img, eyes_xy)
-            print(pt_1)
-            eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
-            blur_face(image, pt_1, pt_2, eyes_xy, blur_mod, emojiSelect)
+        if process == "Me":
+            if name == 'unknown':
+                eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
+                image = hide_face(image, pt_1, pt_2, eyes_xy, blur_mod, emojiSelect)
 
-        else:
-            cv2.rectangle(image, pt_1, pt_2, (0, 255, 0), 2)
-            cv2.putText(image, name + f'__{distance:.2f}', (pt_1[0], pt_1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                        (0, 200, 200), 2)
-            print(name + f'__{distance:.2f}')
+        elif process == "Other":
+            if name != 'unknown':
+                eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
+                image = hide_face(image, pt_1, pt_2, eyes_xy, blur_mod, emojiSelect)
+
 
     cv2.imwrite(save_path, image)
 
@@ -174,7 +169,7 @@ def blurPhoto(request):
                 if not test_image2: continue
             except: pass
             pathList.append(name)
-            recognize_faces(test_image2, save_path, select[0], emojiSelect)
+            recognize_faces(test_image2, save_path, select[0], emojiSelect, procress)
 
 
         if pathList:
