@@ -81,7 +81,7 @@ def l2_normalizer():
     l2_normalizer = Normalizer('l2')
     return l2_normalizer
 
-def recognize_faces(image, save_path, blur_mod, emojiSelect, process):
+def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, process):
 
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -95,7 +95,7 @@ def recognize_faces(image, save_path, blur_mod, emojiSelect, process):
     face_encoder = InceptionResNetV2()
     path_m = "facenet_keras_weights.h5"
     face_encoder.load_weights(path_m)
-    encodings_path = 'encodings/ben_rdj.json'
+    encodings_path = f'encodings/{encode_name}.json'
     encoding_dict = eval(load_pickle(encodings_path), {"array": np.array, "float32": np.float32})
 
     for face in faces:
@@ -107,12 +107,11 @@ def recognize_faces(image, save_path, blur_mod, emojiSelect, process):
         encode = l2.transform(encode.reshape(1, -1))[0]
         name = 'unknown'
 
-        distance = float("inf")
         for db_name, db_encode in encoding_dict.items():
             dist = cosine(db_encode, encode)
-            if dist <= recognition_t and dist < distance:
+            print(db_name, dist)
+            if dist <= recognition_t:
                 name = db_name
-                distance = dist
 
         if process == "Me":
             if name == 'unknown':
@@ -151,10 +150,16 @@ def blurPhoto(request):
         select = request.POST.getlist('filterSelect')
         emojiSelect = request.POST.getlist('emojiSelect')
 
-        file = fs.save(str(images[0]), images[0])
-        images = fs.url(file)
-        encode_photo = cv2.imread("static" + images)
-        face_encoding(encode_photo)
+        image_names = []
+        encode_name = ""
+        for image in images:
+            file = fs.save(str(image), image)
+            image_names.append(file)
+            encode_name += file + "_"
+
+        print(image_names)
+
+        face_encoding(image_names)
 
 
         for image in groupPhoto:
@@ -169,7 +174,7 @@ def blurPhoto(request):
                 if not test_image2: continue
             except: pass
             pathList.append(name)
-            recognize_faces(test_image2, save_path, select[0], emojiSelect, procress)
+            recognize_faces(test_image2, save_path, encode_name, select[0], emojiSelect, procress)
 
 
         if pathList:

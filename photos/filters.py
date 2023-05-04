@@ -1,6 +1,4 @@
 import numpy as np
-#import mtcnn
-# from cv2 import filter2D
 import cv2
 
 def get_face(box):
@@ -26,26 +24,13 @@ def blur(img, x1y1, x2y2):
                              (half_width + 10, half_height + 5),
                              0, 0, 360, color=(255, 255, 255), thickness=-1)
 
-    # cv2.imshow("elips", cv2.cvtColor(image_mask, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
 
     kernel = np.ones((35, 35), np.float32) / (35 * 35)
     blurred_image = cv2.filter2D(img, -1, kernel)
-    # cv2.imshow("blur", cv2.cvtColor(blurred_image, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
 
     mask2 = cv2.bitwise_and(blurred_image, blurred_image, mask=image_mask)
-    # cv2.imshow("mask2", cv2.cvtColor(mask2, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
 
     final_img = image_mask2 + mask2
-    # cv2.imshow("final", cv2.cvtColor(final, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
-
-
-    #kernel = np.ones((35, 35), np.float32) / (35 * 35)
-    # img[y1:y2, x1:x2] = cv2.GaussianBlur(img[y1:y2, x1:x2], (21, 21), 0)
-    #img[y1:y2, x1:x2] = cv2.filter2D(img[y1:y2, x1: x2], -1, kernel)
     return final_img
 
 
@@ -64,25 +49,16 @@ def pixelate(img, x1y1, x2y2):
                               (half_width + 5, half_height + 5),
                               0, 0, 360, color=(255, 255, 255), thickness=-1)
 
-    # cv2.imshow("elips", cv2.cvtColor(image_mask2, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
 
     pixelated_image = np.zeros((h, w, c), np.uint8)
     for x in range(0, h, 10):
         for y in range(0, w, 10):
             pixelated_image[x:x + 10, y:y + 10] = img[x:x + 10, y:y + 10].mean(axis=(0, 1))
 
-    # cv2.imshow("pixelate", cv2.cvtColor(pixelated_image, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey()
 
     mask2 = cv2.bitwise_and(pixelated_image, pixelated_image, mask=image_mask)
-    # cv2.imshow("mask2", cv2.cvtColor(mask2, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
 
     final_img = mask2 + image_mask2
-    # cv2.imshow("final", cv2.cvtColor(final_img, cv2.COLOR_BGR2RGB))
-    # cv2.waitKey(0)
-
     return final_img
 
 
@@ -121,29 +97,15 @@ def emoji_face(img, x1y1, x2y2, emojiSelect):
     x1, y1 = x1y1
     x2, y2 = x2y2
     emoji_path = "static/photoshare/images/emojis/" + emojiSelect[0] + ".png"
-    #emoji_path = "static/photoshare/images/angelFace.png"
+
     emoji = cv2.imread(emoji_path)
     #emoji_rgb = cv2.cvtColor(emoji, cv2.COLOR_BGR2RGB)
-    #cv2.imshow("dnm", emoji)
-    #cv2.waitKey()
-    print(x1, y1, x2, y2)
+
     width = x2 - x1
     height = y2 - y1
 
     emoji = cv2.resize(emoji, (width, height))
-    # cv2.imshow("dnm", img[x1:x2, y1:y2])
-    # cv2.waitKey()
-    # cv2.imshow("dnm", emoji[0:100, 0:500])
-    # cv2.waitKey()
-
-    print(emoji.shape, img[x1:x2, y1:y2].shape)
-
-    # img = cv2.imread("static/images/rdj1.jpg")
-
     img[y1:y2, x1:x2] = blend_non_transparent(img[y1:y2, x1:x2], emoji)
-    # cv2.imshow("dnm", img)
-    # cv2.waitKey(0)
-
     return img
 
 
