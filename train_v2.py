@@ -12,7 +12,16 @@ required_shape = (160, 160)
 face_encoder = InceptionResNetV2()
 path = "facenet_keras_weights.h5"
 face_encoder.load_weights(path)
-face_detector = mtcnn.MTCNN()
+face_detector = cv2.FaceDetectorYN.create(
+        model="face_detection_yunet_2022mar.onnx",  # yunet.onnx face_detection_yunet_2022mar
+        config='',
+        input_size=(480, 640),
+        score_threshold=0.65,
+        nms_threshold=0.35,
+        top_k=5000,
+        backend_id=3,
+        target_id=0
+    )
 encodes = []
 encoding_dict = dict()
 encode_name = ""
@@ -29,17 +38,20 @@ def face_encoding(image_names):
     global face_data, required_shape, face_encoder, face_detector, encodes, encoding_dict, encode_name, l2_normalizer
 
     for name in image_names:
-        print(name)
         image_path = os.path.join(face_data, name)
-        print(image_path)
         img_BGR = cv2.imread(image_path)
         img_RGB = cv2.cvtColor(img_BGR, cv2.COLOR_BGR2RGB)
 
-        x = face_detector.detect_faces(img_RGB)
-        x1, y1, width, height = x[0]['box']
+        face_detector.setInputSize((img_RGB.shape[1], img_RGB.shape[0]))
+        _, face = face_detector.detect(img_RGB)
+        face = face[0][:-1].astype(np.int32)
+
+        x1, y1, width, height = face[:4]
         x1, y1 = abs(x1), abs(y1)
         x2, y2 = x1+width, y1+height
         face = img_RGB[y1:y2, x1:x2]
+        cv2.imshow("dnm", cv2.cvtColor(face, cv2.COLOR_RGB2BGR))
+        cv2.waitKey(0)
 
         face = normalize(face)
         if (face.shape[0] > face.shape[1]):
@@ -70,20 +82,14 @@ def face_encoding(image_names):
 
         if encodes:
             #encode = np.sum(encodes, axis=0 )
-            #encode = l2_normalizer.transform(np.expand_dims(encode, axis=0))[0]
+            encode = l2_normalizer.transform(np.expand_dims(encode, axis=0))[0]
             encoding_dict[name] = encode
 
-        print(encoding_dict)
 
-    print(encoding_dict)
-
-    global encode_name
     for name in image_names:
-        print(encode_name)
         encoding_dict[name] = list(encoding_dict[name])
         encode_name += name + "_"
 
-    print(encoding_dict)
 
     with open(f"encodings/{encode_name}.json", 'w') as f:
         json.dump(str(encoding_dict), f)

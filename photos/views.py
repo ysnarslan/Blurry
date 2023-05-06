@@ -16,7 +16,7 @@ from photos.filters import blur, pixelate, blacked_eyes, emoji_face
 
 
 def detect_faces(face_detector, image):
-    faces = face_detector.detect_faces(image)
+    faces = face_detector.detect(image)
     return faces
 
 def get_face(img, box):
@@ -26,7 +26,7 @@ def get_face(img, box):
     face = img[y1:y2, x1:x2]
     return face, (x1, y1), (x2, y2)
 
-def get_encode(face_encoder, face, size):
+def get_encode(face_encoder, face):
     face = normalize(face)
     if (face.shape[0] > face.shape[1]):
         scale = face.shape[0] / 160
@@ -85,12 +85,22 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
 
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    face_detector = mtcnn.MTCNN()
-    faces = detect_faces(face_detector, img_rgb)
+    face_detector = cv2.FaceDetectorYN.create(
+        model="face_detection_yunet_2022mar.onnx",  # yunet.onnx face_detection_yunet_2022mar
+        config='',
+        input_size=(480, 640),
+        score_threshold=0.6,
+        nms_threshold=0.35,
+        top_k=5000,
+        backend_id=3,
+        target_id=0
+    )
+    face_detector.setInputSize((image.shape[1], image.shape[0]))
+    _, faces = detect_faces(face_detector, img_rgb)
 
-    recognition_t = 0.55
-    confidence_t = 0.95
-    required_shape = (160, 160)
+    recognition_t = 0.65
+    confidence_t = 0.6
+    #required_shape = (160, 160)
 
     face_encoder = InceptionResNetV2()
     path_m = "facenet_keras_weights.h5"
@@ -98,11 +108,16 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
     encodings_path = f'encodings/{encode_name}.json'
     encoding_dict = eval(load_pickle(encodings_path), {"array": np.array, "float32": np.float32})
 
+
     for face in faces:
-        if face['confidence'] < confidence_t:
-            continue
-        img_face, pt_1, pt_2 = get_face(img_rgb, face['box'])
-        encode = get_encode(face_encoder, img_face, required_shape)
+        # if face[-1] < confidence_t:
+        #     continue
+        face = face[:-1].astype(np.int32)
+        img_face, pt_1, pt_2 = get_face(img_rgb, face[:4])
+        cv2.imshow("faces", img_face)
+        cv2.waitKey(0)
+
+        encode = get_encode(face_encoder, img_face)
         l2 = l2_normalizer()
         encode = l2.transform(encode.reshape(1, -1))[0]
         name = 'unknown'
@@ -115,12 +130,12 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
 
         if process == "Me":
             if name == 'unknown':
-                eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
+                eyes_xy = (face[4], face[5]) + (face[6], face[7])
                 image = hide_face(image, pt_1, pt_2, eyes_xy, blur_mod, emojiSelect)
 
         elif process == "Other":
             if name != 'unknown':
-                eyes_xy = face["keypoints"]["left_eye"] + face["keypoints"]["right_eye"]
+                eyes_xy = (face[4], face[5]) + (face[6], face[7])
                 image = hide_face(image, pt_1, pt_2, eyes_xy, blur_mod, emojiSelect)
 
 
@@ -157,7 +172,6 @@ def blurPhoto(request):
             image_names.append(file)
             encode_name += file + "_"
 
-        print(image_names)
 
         face_encoding(image_names)
 
