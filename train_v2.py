@@ -10,10 +10,10 @@ from sklearn.preprocessing import Normalizer
 face_data = "static/images/"
 required_shape = (160, 160)
 face_encoder = InceptionResNetV2()
-path = "facenet_keras_weights.h5"
+path = "weights/facenet_keras_weights.h5"
 face_encoder.load_weights(path)
 face_detector = cv2.FaceDetectorYN.create(
-        model="face_detection_yunet_2022mar.onnx",  # yunet.onnx face_detection_yunet_2022mar
+        model="weights/face_detection_yunet_2022mar.onnx",  # yunet.onnx face_detection_yunet_2022mar
         config='',
         input_size=(480, 640),
         score_threshold=0.65,

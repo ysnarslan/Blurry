@@ -86,7 +86,7 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
     img_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     face_detector = cv2.FaceDetectorYN.create(
-        model="face_detection_yunet_2022mar.onnx",  # yunet.onnx face_detection_yunet_2022mar
+        model="weights/face_detection_yunet_2022mar.onnx",  # yunet.onnx face_detection_yunet_2022mar
         config='',
         input_size=(480, 640),
         score_threshold=0.6,
@@ -103,7 +103,7 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
     #required_shape = (160, 160)
 
     face_encoder = InceptionResNetV2()
-    path_m = "facenet_keras_weights.h5"
+    path_m = "weights/facenet_keras_weights.h5"
     face_encoder.load_weights(path_m)
     encodings_path = f'encodings/{encode_name}.json'
     encoding_dict = eval(load_pickle(encodings_path), {"array": np.array, "float32": np.float32})
