@@ -16,12 +16,15 @@
 
     <link rel="shortcut icon" href="#">
 
+    <script defer src="https://unpkg.com/img-comparison-slider@7/dist/index.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/img-comparison-slider@7/dist/styles.css"/>
+
 </head>
 
 <body>
 
     <div class="fixedBar">
-        <a><img class="imageLogo" src="../../../static/photoshare/images/default-image.jpg">LOGO-İsim</a>
+        <a><img class="imageLogo" src="../../../static/photoshare/images/site/logo.png"></a>
     </div>
 
     <div class="container">
@@ -29,7 +32,10 @@
             <div class="uploadArea">
                 <div class="uploadAreaLeft">
                     <div class="uploadArea1">
-                        <img class="resim" src="../../../static/photoshare/images/default-image.jpg">
+                        <img-comparison-slider>
+                            <img slot="first" src="../../../static/photoshare/images/site/slider_first.jpg" class="resim"/>
+                            <img slot="second" src="../../../static/photoshare/images/site/slider_second.jpg" class="resim"/>
+                        </img-comparison-slider>
                     </div>
                     <div class="uploadArea2">Blur Face Image  </div>
                 </div>
@@ -40,9 +46,9 @@
                             {% csrf_token %}
                             <div class="form-group m-3">
                                 <input type="radio" id="me" name="procress" value="Me" checked>
-                                <label for="age1">Me</label>
+                                <label for="age1">Beni Gizle</label>
                                 <input type="radio" id="other" name="procress" value="Other">
-                                <label for="age2">Other</label>
+                                <label for="age2">Diğerlerini Gizle</label>
                             </div>
                             <div class="form-group m-3">
                                 <input required name="image" id="file" type="file" webkitdirectory directory multiple class="form-control-file" onchange="showFileName('file-name1', this)">
@@ -89,14 +95,20 @@
                 {% endfor %}
             </div>  
             <div class="informArea">
-                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
-                <div class="informItem"><span>Lorem İpsum</span></div> 
-                <div class="informItem"><span>Lorem İpsum</span></div>     
-                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>     
-                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div>
-                <div class="informItem"><span>Lorem İpsum</span></div>           
-                <div class="informItem"><span>Lorem İpsum</span></div>          
-                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/default-image.jpg"></div> 
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_1.png"></div>
+                <div class="informItem informItemText"><span>Burada blurlanacak olan kişileri seçiniz.</span></div> 
+                <div class="informItem informItemText"><span>Tekli fotoğrafların olduğu klasörü seçiniz.</span></div>     
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_2.png"></div>     
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_3.png"></div>    
+                <div class="informItem informItemText"><span>Klasör başarıyla seçildi.</span></div> 
+                <div class="informItem informItemText"><span>Grup fotoğraflarının olduğu klasörü seçiniz.</span></div>      
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_4.png"></div>    
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_5.png"></div>      
+                <div class="informItem informItemText"><span>Klasör başarıyla seçildi.</span></div> 
+                <div class="informItem informItemText"><span>Fotoğraftalara hangi filtreleme türünü uygulayacağınızı seçiniz ve sonra submit butonuna basarak işlemin bitmesini bekleyiniz.</span></div>     
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_6.png"></div>    
+                <div class="informItem"> <img class="resim" src="../../../static/photoshare/images/site/info_7.png"></div>    
+                <div class="informItem informItemText"><span>Seçtiğiniz filtreleme türü fotoğraflara uygulandı. Fotoğrafları indirmek için download butonuna basınız.</span></div> 
             </div> 
         </div>
     </div>

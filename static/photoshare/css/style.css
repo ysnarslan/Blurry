@@ -16,6 +16,8 @@ body{
   width: 100%;
   height: 75px;
   z-index: 1;
+  display: flex;
+  align-items: center;
 }
 
 .fixedBar a {
@@ -28,9 +30,8 @@ body{
   font-size: 17px;
 }
 .imageLogo{
-  height: 50px;
+  height: 100px;
   object-fit: contain;
-  margin: 0px 10px;
 }
 .container{
   margin-top: 150px !important;
@@ -45,11 +46,10 @@ body{
   flex-direction: column;
 }
 .resim{
-  width:100%;
-  object-fit:cover;
-  border-radius: 50px;
+  width: 100%;
+  height: 400px;
+  object-fit: contain;
 }
-
 .uploadArea2 { 
   margin-top: 30px;
   font-size: 36px;
@@ -151,22 +151,14 @@ body{
   justify-content:center;
   align-items: center;
 }
-.informItem:nth-child(2) {
+
+.informItemText{
   font-size: 36px;
   font-weight: bolder;
+  text-align: center;
 }
-.informItem:nth-child(3) {
-  font-size: 36px;
-  font-weight: bolder;
-}
-.informItem:nth-child(6) {
-  font-size: 36px;
-  font-weight: bolder;
-}
-.informItem:nth-child(7) {
-  font-size: 36px;
-  font-weight: bolder;
-}
+
+
 @media (max-width: 767px) {
   .informArea {
     grid-template-columns: 1fr; /* Sadece 1 sütun kullan */
@@ -196,5 +188,23 @@ body{
   }
   .informItem:nth-child(8) {
     order: 7;
+  }
+  .informItem:nth-child(9) {
+    order: 9;
+  }
+  .informItem:nth-child(10) {
+    order: 10;
+  }
+  .informItem:nth-child(11) {
+    order: 12;
+  }
+  .informItem:nth-child(12) {
+    order: 11;
+  }
+  .informItem:nth-child(13) {
+    order: 13;
+  }
+  .informItem:nth-child(14) {
+    order: 14;
   }
 }

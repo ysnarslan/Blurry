@@ -114,8 +114,8 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
         #     continue
         face = face[:-1].astype(np.int32)
         img_face, pt_1, pt_2 = get_face(img_rgb, face[:4])
-        cv2.imshow("faces", img_face)
-        cv2.waitKey(0)
+        # cv2.imshow("faces", img_face)
+        # cv2.waitKey(0)
 
         encode = get_encode(face_encoder, img_face)
         l2 = l2_normalizer()

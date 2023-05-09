@@ -50,8 +50,8 @@ def face_encoding(image_names):
         x1, y1 = abs(x1), abs(y1)
         x2, y2 = x1+width, y1+height
         face = img_RGB[y1:y2, x1:x2]
-        cv2.imshow("dnm", cv2.cvtColor(face, cv2.COLOR_RGB2BGR))
-        cv2.waitKey(0)
+        # cv2.imshow("dnm", cv2.cvtColor(face, cv2.COLOR_RGB2BGR))
+        # cv2.waitKey(0)
 
         face = normalize(face)
         if (face.shape[0] > face.shape[1]):
