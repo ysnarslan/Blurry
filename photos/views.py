@@ -1,8 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 import cv2
 import os 
-import io
-import mtcnn
 import json
 from django.shortcuts import render, redirect
 import numpy as np
@@ -10,7 +8,6 @@ from architecture import *
 from train_v2 import face_encoding
 from scipy.spatial.distance import cosine
 from PIL import Image
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from sklearn.preprocessing import Normalizer
 from photos.filters import blur, pixelate, blacked_eyes, emoji_face
 
@@ -143,14 +140,7 @@ def recognize_faces(image, save_path, encode_name, blur_mod, emojiSelect, proces
 
     PIL_image = Image.open(save_path)
 
-    im_io = io.BytesIO()
-    PIL_image.save(im_io, 'JPEG')
-    im_io.seek(0)
-    image_memory = InMemoryUploadedFile(
-        im_io, None, save_path, 'image/jpeg', len(im_io.getvalue()), None
-    )
-
-    return image
+    return PIL_image
 
 def blurPhoto(request):
     pathList = []
